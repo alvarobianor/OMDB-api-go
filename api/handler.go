@@ -42,7 +42,7 @@ func Handler(apiKey string) http.Handler {
 		})
 	})
 
-	router.Get("/{movie}", getMovie())
+	router.Get("/", getMovie())
 
 	return router
 }
@@ -57,7 +57,7 @@ func getMovie() http.HandlerFunc {
 			return
 		}
 
-		movieName := chi.URLParam(r, "movie")
+		movieName := r.URL.Query().Get("movie")
 
 		if movieName == "" {
 			errMessage := "Movie name is not set"
