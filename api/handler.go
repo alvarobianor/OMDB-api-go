@@ -11,9 +11,21 @@ import (
 	"github.com/go-chi/cors"
 )
 
+type ResultData struct {
+	Response string `json:"Response"`
+	Search   []struct {
+		Poster string `json:"Poster"`
+		Title  string `json:"Title"`
+		Type   string `json:"Type"`
+		Year   string `json:"Year"`
+		ImdbID string `json:"imdbID"`
+	} `json:"Search"`
+	TotalResults string `json:"totalResults"`
+}
+
 type Response struct {
-	Error string      `json:"error,omitempty"`
-	Data  interface{} `json:"data,omitempty"`
+	Error string     `json:"error,omitempty"`
+	Data  ResultData `json:"data,omitempty"`
 }
 
 const apiUrl = "https://www.omdbapi.com/?s=%s&apikey=%s"
@@ -76,7 +88,7 @@ func getMovie() http.HandlerFunc {
 			return
 		}
 
-		var data any
+		var data ResultData
 
 		if errDecode := json.NewDecoder(resp.Body).Decode(&data); errDecode != nil {
 			errMessage := "Failed to decode movie"
