@@ -2,9 +2,9 @@ package api
 
 import (
 	"encoding/json"
-	"fmt"
 	"log/slog"
 	"net/http"
+	"net/url"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -28,7 +28,7 @@ type Response struct {
 	Data  ResultData `json:"data,omitempty"`
 }
 
-const apiUrl = "https://www.omdbapi.com/?s=%s&apikey=%s"
+const apiUrl = "https://www.omdbapi.com/?"
 
 func Handler(apiKey string) http.Handler {
 	router := chi.NewMux()
@@ -78,7 +78,10 @@ func getMovie() http.HandlerFunc {
 			return
 		}
 
-		concatUrlApi := fmt.Sprintf(apiUrl, movieName, apiKeyHeader)
+		queryParams := url.Values{}
+		queryParams.Add("s", movieName)
+		queryParams.Add("apiKey", apiKeyHeader)
+		concatUrlApi := apiUrl + queryParams.Encode()
 
 		resp, err := http.Get(concatUrlApi)
 		if err != nil {
