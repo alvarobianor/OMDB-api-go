@@ -7,7 +7,7 @@ import (
 	"github.com/go-chi/cors"
 )
 
-func Handler() http.Handler {
+func Handler(apiKey string) http.Handler {
 	router := chi.NewMux()
 
 	corsMiddleware := cors.New(cors.Options{

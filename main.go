@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"os"
 	"time"
+
+	"github.com/joho/godotenv"
 )
 
 func main() {
@@ -16,7 +18,21 @@ func main() {
 }
 
 func run() error {
-	handler := api.Handler()
+	errDotEnv := godotenv.Load()
+
+	if errDotEnv != nil {
+		slog.Error("failed to load .env file", "error", errDotEnv)
+		os.Exit(1)
+	}
+
+	apiKey := os.Getenv("API_KEY")
+
+	if apiKey == "" {
+		slog.Error("API_KEY is not set")
+		os.Exit(1)
+	}
+
+	handler := api.Handler(apiKey)
 
 	server := http.Server{
 		Addr:    ":8081",
